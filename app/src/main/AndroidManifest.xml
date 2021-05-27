@@ -10,14 +10,14 @@
         android:supportsRtl="true"
         android:theme="@style/Theme.VirtualReality_SNS" >
         <activity android:name=".login_signup.LoginSignupActivity">
+
+        </activity>
+        <activity android:name=".home.HomeActivity">
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />
 
                 <category android:name="android.intent.category.LAUNCHER" />
             </intent-filter>
-        </activity>
-        <activity android:name=".home.HomeActivity">
-
         </activity>
     </application>
 

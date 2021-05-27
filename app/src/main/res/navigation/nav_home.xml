@@ -1,7 +1,23 @@
 <?xml version="1.0" encoding="utf-8"?>
 <navigation xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
-    android:id="@+id/nav_home">
+    xmlns:tools="http://schemas.android.com/tools"
+    android:id="@+id/nav_home"
+    app:startDestination="@id/fragment_one">
 
 
+    <fragment
+        android:id="@+id/fragment_one"
+        android:name="com.example.virtualreality_sns.fragment_one"
+        android:label="fragment_one"
+        tools:layout="@layout/fragment_one" >
+        <action
+            android:id="@+id/action_fragment_one_to_fragment_two"
+            app:destination="@id/fragment_two" />
+    </fragment>
+    <fragment
+        android:id="@+id/fragment_two"
+        android:name="com.example.virtualreality_sns.fragment_two"
+        android:label="fragment_two"
+        tools:layout="@layout/fragment_two" />
 </navigation>

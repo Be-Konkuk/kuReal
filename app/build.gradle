@@ -72,4 +72,9 @@ dependencies {
     implementation 'io.reactivex.rxjava2:rxkotlin:2.3.0'
     //Coroutine
     implementation 'org.jetbrains.kotlinx:kotlinx-coroutines-android:1.4.2'
+
+    //Vr support
+    implementation 'com.google.vr:sdk-base:1.160.0'
+    //panorama support
+    implementation "com.google.vr:sdk-panowidget:1.170.0"
 }

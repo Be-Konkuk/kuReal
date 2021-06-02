@@ -1,6 +1,7 @@
 package com.example.virtualreality_sns.login_signup
 
 import android.os.Bundle
+import android.util.Log
 import androidx.appcompat.app.AppCompatActivity
 import androidx.navigation.NavController
 import androidx.navigation.fragment.NavHostFragment
@@ -12,6 +13,7 @@ class LoginSignupActivity : AppCompatActivity() {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_loginsignup)
         initNavController()
+
     }
 
     private fun initNavController(){

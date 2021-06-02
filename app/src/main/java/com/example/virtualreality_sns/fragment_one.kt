@@ -1,59 +1,114 @@
 package com.example.virtualreality_sns
 
+import android.content.res.AssetManager
+import android.graphics.Bitmap
+import android.graphics.BitmapFactory
+import android.net.Uri
 import android.os.Bundle
-import androidx.fragment.app.Fragment
+import android.os.Handler
+import android.os.Looper
+import android.util.Pair
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
+import androidx.fragment.app.Fragment
+import com.example.virtualreality_sns.databinding.FragmentOneBinding
+import com.google.vr.sdk.widgets.pano.VrPanoramaView
+import java.io.IOException
+import java.io.InputStream
 
-// TODO: Rename parameter arguments, choose names that match
-// the fragment initialization parameters, e.g. ARG_ITEM_NUMBER
-private const val ARG_PARAM1 = "param1"
-private const val ARG_PARAM2 = "param2"
 
-/**
- * A simple [Fragment] subclass.
- * Use the [fragment_one.newInstance] factory method to
- * create an instance of this fragment.
- */
 class fragment_one : Fragment() {
-    // TODO: Rename and change types of parameters
-    private var param1: String? = null
-    private var param2: String? = null
-
-    override fun onCreate(savedInstanceState: Bundle?) {
-        super.onCreate(savedInstanceState)
-        arguments?.let {
-            param1 = it.getString(ARG_PARAM1)
-            param2 = it.getString(ARG_PARAM2)
-        }
-    }
+    private val handler: Handler = Handler(Looper.getMainLooper())
+    private var _binding: FragmentOneBinding? = null
+    private val binding get() = _binding ?: error("View를 참조하기 위해 binding이 초기화되지 않았습니다.")
 
     override fun onCreateView(
-        inflater: LayoutInflater, container: ViewGroup?,
+        inflater: LayoutInflater,
+        container: ViewGroup?,
         savedInstanceState: Bundle?
     ): View? {
-        // Inflate the layout for this fragment
-        return inflater.inflate(R.layout.fragment_one, container, false)
+        _binding = FragmentOneBinding.inflate(inflater, container, false)
+        binding.lifecycleOwner = viewLifecycleOwner
+        return binding.root
     }
 
-    companion object {
-        /**
-         * Use this factory method to create a new instance of
-         * this fragment using the provided parameters.
-         *
-         * @param param1 Parameter 1.
-         * @param param2 Parameter 2.
-         * @return A new instance of fragment fragment_one.
-         */
-        // TODO: Rename and change types and number of parameters
-        @JvmStatic
-        fun newInstance(param1: String, param2: String) =
-            fragment_one().apply {
-                arguments = Bundle().apply {
-                    putString(ARG_PARAM1, param1)
-                    putString(ARG_PARAM2, param2)
+    override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
+        super.onViewCreated(view, savedInstanceState)
+        //함수
+        panoramaMethod()
+
+    }
+
+    private fun panoramaMethod() {
+        showSpherePanorama(Pair.create(getActivity()?.getIntent()?.getData(), VrPanoramaView.Options()))
+    }
+
+    private fun showSpherePanorama(pair: Pair<Uri, VrPanoramaView.Options>) {
+        handler.postDelayed({
+            var `is`: InputStream? = null
+            val assetManager: AssetManager? = context?.getAssets()
+            try {
+                if (assetManager != null) {
+                    `is` = assetManager.open("panorama2.jpeg")
+                }
+                val options = VrPanoramaView.Options()
+                options.inputType = VrPanoramaView.Options.TYPE_MONO
+                binding.vrPanoramaView!!.loadImageFromBitmap(BitmapFactory.decodeStream(`is`), options)
+            } catch (e: IOException) {
+                e.printStackTrace()
+            } finally {
+                if (`is` != null) {
+                    try {
+                        `is`.close()
+                    } catch (e: IOException) {
+                        e.printStackTrace()
+                    }
                 }
             }
+        }, 0)
     }
+
+
+
+
+//    private fun bitmap(){
+//
+//        handler.postDelayed({
+//            var bitmap1: InputStream? = null
+//            var bitmap2: InputStream? = null
+//            val assetManager: AssetManager? = context?.getAssets()
+//            try {
+//                if (assetManager != null) {
+//                    bitmap1 = assetManager.open("panorama2.jpeg")
+//                    bitmap2 = assetManager.open("panorama2.jpeg")
+//                }
+//                var listBmp: Bitmap
+//
+//
+//            } catch (e: IOException) {
+//                e.printStackTrace()
+//            } finally {
+//                if (bitmap1 != null) {
+//                    try {
+//                        bitmap1.close()
+//                        bitmap2.close()
+//                    } catch (e: IOException) {
+//                        e.printStackTrace()
+//                    }
+//                }
+//            }
+//        }, 0)
+//    }
+//
+//    private fun mergeMultiple(Bitmap, Bitmap): Bitmap? {
+//        val result =
+//            Bitmap.createBitmap(parts[0].width * 2, parts[0].height * 2, Bitmap.Config.ARGB_8888)
+//        val canvas = Canvas(result)
+//        val paint = Paint()
+//        for (i in parts.indices) {
+//            canvas.drawBitmap(parts[i], parts[i].width * (i % 2), parts[i].height * (i / 2), paint)
+//        }
+//        return result
+//    }
 }

@@ -68,47 +68,4 @@ class fragment_one : Fragment() {
             }
         }, 0)
     }
-
-
-
-
-//    private fun bitmap(){
-//
-//        handler.postDelayed({
-//            var bitmap1: InputStream? = null
-//            var bitmap2: InputStream? = null
-//            val assetManager: AssetManager? = context?.getAssets()
-//            try {
-//                if (assetManager != null) {
-//                    bitmap1 = assetManager.open("panorama2.jpeg")
-//                    bitmap2 = assetManager.open("panorama2.jpeg")
-//                }
-//                var listBmp: Bitmap
-//
-//
-//            } catch (e: IOException) {
-//                e.printStackTrace()
-//            } finally {
-//                if (bitmap1 != null) {
-//                    try {
-//                        bitmap1.close()
-//                        bitmap2.close()
-//                    } catch (e: IOException) {
-//                        e.printStackTrace()
-//                    }
-//                }
-//            }
-//        }, 0)
-//    }
-//
-//    private fun mergeMultiple(Bitmap, Bitmap): Bitmap? {
-//        val result =
-//            Bitmap.createBitmap(parts[0].width * 2, parts[0].height * 2, Bitmap.Config.ARGB_8888)
-//        val canvas = Canvas(result)
-//        val paint = Paint()
-//        for (i in parts.indices) {
-//            canvas.drawBitmap(parts[i], parts[i].width * (i % 2), parts[i].height * (i / 2), paint)
-//        }
-//        return result
-//    }
 }

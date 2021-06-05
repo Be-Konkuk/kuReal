@@ -16,10 +16,21 @@
         android:layout_width="0dp"
         android:layout_height="0dp"
         android:layout_margin="8dp"
-        app:layout_constraintBottom_toTopOf="@+id/btn_camera"
+        app:layout_constraintBottom_toTopOf="@+id/pv_image"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toTopOf="parent" />
+
+    <com.google.vr.sdk.widgets.pano.VrPanoramaView
+        android:id="@+id/pv_image"
+        android:layout_width="0dp"
+        android:layout_height="0dp"
+        android:scrollbars="none"
+        app:layout_constraintTop_toBottomOf="@id/iv_image"
+        app:layout_constraintBottom_toTopOf="@id/btn_camera"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintEnd_toEndOf="parent"/>
+
     <Button
         android:id="@+id/btn_camera"
         android:layout_width="match_parent"
@@ -27,8 +38,16 @@
         android:text="1 : Take Picture and Preview"
         android:layout_margin="8dp"
         android:textSize="13sp"
+        app:layout_constraintBottom_toTopOf="@+id/btn_camera2"
+        />
+    <Button
+        android:id="@+id/btn_camera2"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:text="2 : Stiching image"
+        android:layout_margin="8dp"
+        android:textSize="13sp"
         app:layout_constraintBottom_toBottomOf="parent"
         />
-
 </androidx.constraintlayout.widget.ConstraintLayout>
 </layout>

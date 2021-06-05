@@ -11,22 +11,22 @@
     android:layout_height="match_parent"
     tools:context=".fragment_two">
 
-    <ImageView
-        android:id="@+id/iv_image"
-        android:layout_width="0dp"
-        android:layout_height="0dp"
-        android:layout_margin="8dp"
-        app:layout_constraintBottom_toTopOf="@+id/pv_image"
-        app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toTopOf="parent" />
+<!--    <ImageView-->
+<!--        android:id="@+id/iv_image"-->
+<!--        android:layout_width="0dp"-->
+<!--        android:layout_height="0dp"-->
+<!--        android:layout_margin="8dp"-->
+<!--        app:layout_constraintBottom_toTopOf="@+id/pv_image"-->
+<!--        app:layout_constraintEnd_toEndOf="parent"-->
+<!--        app:layout_constraintStart_toStartOf="parent"-->
+<!--        app:layout_constraintTop_toTopOf="parent" />-->
 
     <com.google.vr.sdk.widgets.pano.VrPanoramaView
         android:id="@+id/pv_image"
         android:layout_width="0dp"
         android:layout_height="0dp"
         android:scrollbars="none"
-        app:layout_constraintTop_toBottomOf="@id/iv_image"
+        app:layout_constraintTop_toTopOf="parent"
         app:layout_constraintBottom_toTopOf="@id/btn_camera"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintEnd_toEndOf="parent"/>

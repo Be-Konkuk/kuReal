@@ -105,7 +105,7 @@ class fragment_two : Fragment() {
                 tmp = img
             } }
 
-            binding.ivImage.setImageBitmap( ImageDecoder.decodeBitmap(tmp)) //이미지 설정
+            //binding.ivImage.setImageBitmap( ImageDecoder.decodeBitmap(tmp)) //이미지 설정
             panoramaMethod(imageList) //파노라마 뷰 설
         }
 
@@ -122,39 +122,44 @@ class fragment_two : Fragment() {
             else if (clipData.itemCount == 1) {
                 Log.i("2. clipdata choice", clipData.getItemAt(0).uri.toString())
                 Log.i("2. single choice", clipData.getItemAt(0).uri.path!!)
-                imageList.add(clipData.getItemAt(0).uri.toString())
+                imageList.add(clipData.getItemAt(0).uri)
             }
             //1~10개 고름
             else if (clipData.itemCount > 1 && clipData.itemCount < 10) {
                 var i = 0
                 while (i < clipData.itemCount) {
                     Log.i("3. single choice", clipData.getItemAt(i).uri.toString())
-                    imageList.add(clipData.getItemAt(i).uri.toString())
+                    imageList.add(clipData.getItemAt(i).uri)
                     i++
                 }
 
-                //일단 두 개만 붙여보기
-                //var mergedImg = mergeMultiple(imageList)
+//                var mergedImg = mergeMultiple(imageList)
+//                binding.ivImage.setImageBitmap(mergedImg)
+                panoramaMethod(imageList)
             }
         }
     }
 
 
-//    private fun mergeMultiple(imageList: ArrayList<Any>): Bitmap? {
-//        val listBmp: ArrayList<Bitmap> = ArrayList<Bitmap>()
-//        if (listBmp != null) {
+    private fun mergeMultiple(imageList: ArrayList<Any>): Bitmap? {
+        val listBmp: ArrayList<Bitmap> = ArrayList<Bitmap>()
+        if (listBmp != null) {
+            for (i in imageList.indices) {
+                listBmp.add(BitmapFactory.decodeFile(getFullPathFromUri(requireContext(),imageList[i] as Uri)))
+            }
 //            listBmp.add(BitmapFactory.decodeFile(getFullPathFromUri(requireContext(),imageList[0] as Uri)))
 //            listBmp.add(BitmapFactory.decodeFile(getFullPathFromUri(requireContext(),imageList[1] as Uri)))
-//        }
-//        val result =
-//            Bitmap.createBitmap(listBmp[0].width * 2, listBmp[0].height * 2, Bitmap.Config.ARGB_8888)
-//        val canvas = Canvas(result)
-//        val paint = Paint()
-//        for (i in listBmp.indices) {
-//            canvas.drawBitmap(listBmp[i], listBmp[i].width * (i % 2), listBmp[i].height * (i / 2), paint)
-//        }
-//        return result
-//    }
+        }
+        val result =
+            Bitmap.createBitmap(listBmp[0].width * imageList.size, listBmp[0].height, Bitmap.Config.ARGB_8888)
+
+        val canvas = Canvas(result)
+        val paint = Paint()
+        for (i in listBmp.indices) {
+            canvas.drawBitmap(listBmp[i], (listBmp[i].width * (i % imageList.size)).toFloat(), (listBmp[i].height * (i / imageList.size)).toFloat(), paint)
+        }
+        return result
+    }
 
 
     private fun panoramaMethod(imageList: ArrayList<Any>) {
@@ -166,12 +171,17 @@ class fragment_two : Fragment() {
         imageList: ArrayList<Any>
     ) {
         handler.postDelayed({
+
             val options = VrPanoramaView.Options()
             options.inputType = VrPanoramaView.Options.TYPE_MONO
 
             //절대경로 받아오기
-            val realAdd = getFullPathFromUri(requireContext(),imageList[0] as Uri)
-            binding.pvImage.loadImageFromBitmap(BitmapFactory.decodeFile(realAdd), options) //파노라마 설정
+//            val realAdd = getFullPathFromUri(requireContext(),imageList[0] as Uri)
+//            binding.pvImage.loadImageFromBitmap(BitmapFactory.decodeFile(realAdd), options) //파노라마 설정
+//
+            //test
+            binding.pvImage.loadImageFromBitmap(mergeMultiple(imageList), options)
+
         }, 0)
     }
 
@@ -228,7 +238,7 @@ class fragment_two : Fragment() {
 
         // TODO : 다른 FRAGMENT를 갔다가 들어오면 launch가 제대로 동작하지 않음
         val imageBitmap = photoUri?.let { ImageDecoder.createSource(requireContext().contentResolver, it) }
-        binding.ivImage.setImageBitmap(imageBitmap?.let { ImageDecoder.decodeBitmap(it) })
+        //binding.ivImage.setImageBitmap(imageBitmap?.let { ImageDecoder.decodeBitmap(it) })
         Log.d("TESTCAMERA","들어옴")
         galleryAddPic()
     }

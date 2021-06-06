@@ -14,10 +14,18 @@
         <action
             android:id="@+id/action_fragment_one_to_fragment_two"
             app:destination="@id/fragment_two" />
+        <action
+            android:id="@+id/action_fragment_one_to_fragment_three"
+            app:destination="@id/fragment_three" />
     </fragment>
     <fragment
         android:id="@+id/fragment_two"
         android:name="com.example.virtualreality_sns.fragment_two"
         android:label="fragment_two"
         tools:layout="@layout/fragment_two" />
+    <fragment
+        android:id="@+id/fragment_three"
+        android:name="com.example.virtualreality_sns.fragment_three"
+        android:label="fragment_three"
+        tools:layout="@layout/fragment_three" />
 </navigation>

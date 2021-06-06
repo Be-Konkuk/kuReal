@@ -3,15 +3,16 @@ package com.example.virtualreality_sns.util
 import android.Manifest
 import android.app.Activity
 import android.content.Context
-import android.location.LocationManager
-import android.content.pm.PackageManager
-import android.os.Bundle
-import android.location.LocationListener
 import android.content.Context.LOCATION_SERVICE
+import android.content.pm.PackageManager
 import android.location.Location
+import android.location.LocationListener
+import android.location.LocationManager
+import android.os.Bundle
 import android.util.Log
 import androidx.core.app.ActivityCompat
 import androidx.core.content.ContextCompat
+
 
 class LocationHelper {
 
@@ -29,7 +30,6 @@ class LocationHelper {
         myLocationListener = myListener
 
         val mLocationManager = context.getSystemService(LOCATION_SERVICE) as LocationManager
-
         val mLocationListener = object : LocationListener {
             override fun onLocationChanged(location: Location) {
                 //your code here
@@ -41,10 +41,16 @@ class LocationHelper {
         }
 // check for permissions
         if (ContextCompat.checkSelfPermission(context, Manifest.permission.ACCESS_COARSE_LOCATION) == PackageManager.PERMISSION_GRANTED && ContextCompat.checkSelfPermission(context,Manifest.permission.ACCESS_FINE_LOCATION) == PackageManager.PERMISSION_GRANTED) {
-            mLocationManager.requestLocationUpdates(LocationManager.GPS_PROVIDER, LOCATION_REFRESH_TIME.toLong(),LOCATION_REFRESH_DISTANCE.toFloat(), mLocationListener)
-        } else {
+            mLocationManager.requestLocationUpdates(
+                LocationManager.NETWORK_PROVIDER, //GPS_PROVIDER > NETWORK_PROVIDER //실내에서는 gps안되는 듯
+                LOCATION_REFRESH_TIME.toLong(),
+                LOCATION_REFRESH_DISTANCE.toFloat(),
+                mLocationListener)
+        }
+        else {
             if (ActivityCompat.shouldShowRequestPermissionRationale(context as Activity, Manifest.permission.ACCESS_FINE_LOCATION) || ActivityCompat.shouldShowRequestPermissionRationale(context as Activity,Manifest.permission.ACCESS_COARSE_LOCATION)) {
                 // permission is denined by user, you can show your alert dialog here to send user to App settings to enable permission
+                //권한을 설정해주세요 메세지 띄우기
             } else {
                 ActivityCompat.requestPermissions(context,arrayOf(Manifest.permission.ACCESS_FINE_LOCATION, Manifest.permission.ACCESS_COARSE_LOCATION),MY_PERMISSIONS_REQUEST_LOCATION)
             }

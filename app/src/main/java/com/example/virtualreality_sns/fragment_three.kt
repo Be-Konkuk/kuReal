@@ -1,31 +1,26 @@
 package com.example.virtualreality_sns
 
-import android.content.res.AssetManager
-import android.graphics.Bitmap
-import android.graphics.BitmapFactory
+
 import android.location.Location
-import android.net.Uri
 import android.os.Bundle
-import android.os.Handler
-import android.os.Looper
 import android.util.Log
-import android.util.Pair
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import androidx.fragment.app.Fragment
-import com.example.virtualreality_sns.databinding.FragmentOneBinding
 import com.example.virtualreality_sns.databinding.FragmentThreeBinding
 import com.example.virtualreality_sns.util.LocationHelper
-import com.google.vr.sdk.widgets.pano.VrPanoramaView
-import java.io.IOException
-import java.io.InputStream
+import com.google.android.gms.maps.CameraUpdateFactory
+import com.google.android.gms.maps.GoogleMap
+import com.google.android.gms.maps.OnMapReadyCallback
+import com.google.android.gms.maps.model.LatLng
+import com.google.android.gms.maps.model.MarkerOptions
 
 
-class fragment_three : Fragment() {
-    private val handler: Handler = Handler(Looper.getMainLooper())
+class fragment_three : Fragment() , OnMapReadyCallback{
     private var _binding: FragmentThreeBinding? = null
     private val binding get() = _binding ?: error("View를 참조하기 위해 binding이 초기화되지 않았습니다.")
+    private lateinit var mMap: GoogleMap
 
     override fun onCreateView(
         inflater: LayoutInflater,
@@ -34,6 +29,10 @@ class fragment_three : Fragment() {
     ): View? {
         _binding = FragmentThreeBinding.inflate(inflater, container, false)
         binding.lifecycleOwner = viewLifecycleOwner
+
+        binding.mvMap.onCreate(savedInstanceState)
+        binding.mvMap.getMapAsync(this)
+
         return binding.root
     }
 
@@ -46,10 +45,46 @@ class fragment_three : Fragment() {
             override fun onLocationChanged(location: Location) {
                 // Here you got user location :)
                 Log.d("Location","" + location.latitude + "," + location.longitude)
+                var currentLoc = LocationData(location.latitude,location.longitude,"Current")
+                markLoc(currentLoc)
             }
         })
     }
 
+    override fun onMapReady(googleMap: GoogleMap) {
+        mMap = googleMap
+        var konkukLoc = LocationData(37.54093262179155, 127.07931061173049,"Konkuk")
+        markLoc(konkukLoc)
+    }
 
+    fun markLoc(loc:LocationData){
+        val marker = LatLng(loc.lat, loc.long)
+        mMap.addMarker(MarkerOptions().position(marker).title(loc.title))
+        mMap.moveCamera(CameraUpdateFactory.newLatLng(marker))
+    }
 
+    override fun onStart() {
+        super.onStart()
+        _binding?.mvMap?.onStart()
+    }
+    override fun onStop() {
+        super.onStop()
+        _binding?.mvMap?.onStop()
+    }
+    override fun onResume() {
+        super.onResume()
+        _binding?.mvMap?.onResume()
+    }
+    override fun onPause() {
+        super.onPause()
+        _binding?.mvMap?.onPause()
+    }
+    override fun onLowMemory() {
+        super.onLowMemory()
+        _binding?.mvMap?.onLowMemory()
+    }
+    override fun onDestroy() {
+        _binding?.mvMap?.onDestroy()
+        super.onDestroy()
+    }
 }

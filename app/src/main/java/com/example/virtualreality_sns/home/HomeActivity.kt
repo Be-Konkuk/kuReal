@@ -13,6 +13,7 @@ import com.example.virtualreality_sns.fragment_one
 import com.example.virtualreality_sns.fragment_two
 import android.util.Log
 import android.view.MenuItem
+import com.example.virtualreality_sns.fragment_three
 import com.google.android.material.bottomnavigation.BottomNavigationView
 
 class HomeActivity :AppCompatActivity(),BottomNavigationView.OnNavigationItemSelectedListener{
@@ -22,7 +23,7 @@ class HomeActivity :AppCompatActivity(),BottomNavigationView.OnNavigationItemSel
 
     private val fragmentOne by lazy { fragment_one() }
     private val fragmentTwo by lazy { fragment_two() }
-    private val fragmentThree by lazy { fragment_one() }
+    private val fragmentThree by lazy { fragment_three() }
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)

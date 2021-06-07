@@ -1,48 +1,76 @@
 package com.example.virtualreality_sns.picture
 
 import android.content.Context
-import android.media.MediaScannerConnection
-import android.os.Environment
-import android.util.Log
-import java.io.File
-import java.io.IOException
-import java.text.SimpleDateFormat
-import java.util.*
+import android.database.Cursor
+import android.graphics.Bitmap
+import android.graphics.BitmapFactory
+import android.graphics.Canvas
+import android.graphics.Paint
+import android.net.Uri
+import android.provider.MediaStore
+import java.util.ArrayList
 
-class PictureHelper (context:Context){
+class PictureHelper(context:Context) {
+    private val mContext = context
 
-    var mContext = context
-    lateinit var currentPhotoPath: String
-
-    val photoFile: File? = try {
-        createImageFile()
-    } catch (ex: IOException) {
-        // Error occurred while creating the File
-        Log.d("test", "error: $ex")
-        null
-    }
-
-
-    @Throws(IOException::class)
-    private fun createImageFile(): File {
-        // Create an image file name
-        val timeStamp: String = SimpleDateFormat("yyyyMMdd_HHmmss").format(Date())
-        val storageDir: File? = Environment.getExternalStoragePublicDirectory(Environment.DIRECTORY_PICTURES)
-        return File.createTempFile(
-            "JPEG_${timeStamp}_", /* prefix */
-            ".jpg", /* suffix */
-            storageDir /* directory */
-        ).apply {
-            // Save a file: path for use with ACTION_VIEW intents
-            currentPhotoPath = absolutePath
-            Log.d("test", "currentPhotoPath : $currentPhotoPath")
+    fun mergeMultiple(imageList: ArrayList<Any>): Bitmap? {
+        val listBmp: ArrayList<Bitmap> = ArrayList<Bitmap>()
+        if (listBmp != null) {
+            //imageList에 존재하는 것 절대 경로로 변환해서 bitmap으로 변환
+            for (i in imageList.indices) {
+                listBmp.add(BitmapFactory.decodeFile(getFullPathFromUri(mContext,imageList[i] as Uri)))
+            }
         }
+        val result =
+            Bitmap.createBitmap(listBmp[0].width * imageList.size, listBmp[0].height, Bitmap.Config.ARGB_8888)
+
+        val canvas = Canvas(result)
+        val paint = Paint()
+        // TODO : 높이가 다른 이미지들을 붙이면 제대로 붙지 않음
+        for (i in listBmp.indices) {
+            canvas.drawBitmap(listBmp[i], (listBmp[i].width * (i % imageList.size)).toFloat(), (listBmp[i].height * (i / imageList.size)).toFloat(), paint)
+        }
+        return result
     }
 
-    fun galleryAddPic() {
-        Log.d("test", "currentPhotoPath2 : $currentPhotoPath")
-
-        val file = File(currentPhotoPath)
-        MediaScannerConnection.scanFile(mContext, arrayOf(file.toString()), null, null)
+    //절대경로 반환
+    fun getFullPathFromUri(ctx: Context, fileUri: Uri?): String? {
+        var fullPath: String? = null
+        val column = "_data"
+        var cursor: Cursor? =
+            fileUri?.let { ctx.getContentResolver().query(it, null, null, null, null) }
+        if (cursor != null) {
+            cursor.moveToFirst()
+            var document_id: String = cursor.getString(0)
+            if (document_id == null) {
+                for (i in 0 until cursor.getColumnCount()) {
+                    if (column.equals(cursor.getColumnName(i), ignoreCase = true)) {
+                        fullPath = cursor.getString(i)
+                        break
+                    }
+                }
+            }
+            else {
+                document_id = document_id.substring(document_id.lastIndexOf(":") + 1)
+                cursor.close()
+                val projection = arrayOf(column)
+                try {
+                    cursor = ctx.getContentResolver().query(
+                        MediaStore.Images.Media.EXTERNAL_CONTENT_URI,
+                        projection,
+                        MediaStore.Images.Media._ID + " = ? ",
+                        arrayOf(document_id),
+                        null
+                    )
+                    if (cursor != null) {
+                        cursor.moveToFirst()
+                        fullPath = cursor.getString(cursor.getColumnIndexOrThrow(column))
+                    }
+                } finally {
+                    if (cursor != null) cursor.close()
+                }
+            }
+        }
+        return fullPath
     }
 }

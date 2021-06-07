@@ -7,7 +7,7 @@ import android.content.pm.PackageManager
 import androidx.core.app.ActivityCompat
 import androidx.core.content.ContextCompat
 
-class PermissionSupport (context:Context){
+class PermissionHelper (context:Context){
     private val mContext = context
     private val permissionList : MutableList<String> = mutableListOf()
 

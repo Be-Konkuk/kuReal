@@ -29,6 +29,7 @@ import androidx.fragment.app.Fragment
 import androidx.fragment.app.viewModels
 import com.example.virtualreality_sns.databinding.FragmentTwoBinding
 import com.example.virtualreality_sns.login_signup.login.LoginViewModel
+import com.example.virtualreality_sns.picture.PictureHelper
 import com.example.virtualreality_sns.util.PermissionSupport
 import com.google.vr.sdk.widgets.pano.VrPanoramaView
 import java.io.File
@@ -41,13 +42,11 @@ class TwoFragment : Fragment() {
     private var _binding: FragmentTwoBinding? = null
     private val binding get() = _binding ?: error("View를 참조하기 위해 binding이 초기화되지 않았습니다.")
     private val viewModel: TwoViewModel by viewModels() //위임초기화
-    // 원본 사진이 저장되는 Uri
-    private var photoUri: Uri? = null
-    private lateinit var currentPhotoPath: String
     private val handler: Handler = Handler(Looper.getMainLooper()) //tmp
 
     //권한 요청
     private lateinit var permissionSupport :PermissionSupport
+    private lateinit var pictureHelper: PictureHelper
 
     override fun onCreateView(
         inflater: LayoutInflater,
@@ -57,6 +56,8 @@ class TwoFragment : Fragment() {
         _binding = FragmentTwoBinding.inflate(inflater, container, false)
         binding.lifecycleOwner = viewLifecycleOwner
         permissionSupport = PermissionSupport(requireContext()) //권한 요청
+        pictureHelper = PictureHelper(requireContext())
+
         goCheckPermissions()
         return binding.root
     }
@@ -198,13 +199,8 @@ class TwoFragment : Fragment() {
         Intent(MediaStore.ACTION_IMAGE_CAPTURE).also { takePictureIntent ->
             takePictureIntent.resolveActivity(requireContext().packageManager)?.also {
                 // 사진 파일을 만듭니다.
-                val photoFile: File? = try {
-                    createImageFile()
-                } catch (ex: IOException) {
-                    // Error occurred while creating the File
-                    Log.d("test", "error: $ex")
-                    null
-                }
+                val photoFile = pictureHelper.photoFile
+
                 // photoUri를 보내는 코드
                 photoFile?.also {
                     val photoURI: Uri = FileProvider.getUriForFile(
@@ -214,49 +210,17 @@ class TwoFragment : Fragment() {
                     )
                     takePictureIntent.putExtra(MediaStore.EXTRA_OUTPUT, photoURI)
                     cameraActivityLauncher.launch(takePictureIntent)
-
                 }
             }
         }
     }
 
-    @Throws(IOException::class)
-    private fun createImageFile(): File {
-        // Create an image file name
-        val timeStamp: String = SimpleDateFormat("yyyyMMdd_HHmmss").format(Date())
-        val storageDir: File? = Environment.getExternalStoragePublicDirectory(Environment.DIRECTORY_PICTURES)
-        return File.createTempFile(
-            "JPEG_${timeStamp}_", /* prefix */
-            ".jpg", /* suffix */
-            storageDir /* directory */
-        ).apply {
-            // Save a file: path for use with ACTION_VIEW intents
-            currentPhotoPath = absolutePath
-            Log.d("test", "currentPhotoPath : $currentPhotoPath")
-        }
-    }
-
-
     private val cameraActivityLauncher = registerForActivityResult(
         ActivityResultContracts.StartActivityForResult()
     ){
         result: ActivityResult ->
-//        val imageBitmap = result?.getData()?.extras?.get("data") as Bitmap
-//        //saveBitmapAsJPGFile(imageBitmap)
-//        binding.ivImage.setImageBitmap(imageBitmap)
-
         // TODO : 다른 FRAGMENT를 갔다가 들어오면 launch가 제대로 동작하지 않음
-        val imageBitmap = photoUri?.let { ImageDecoder.createSource(requireContext().contentResolver, it) }
-        //binding.ivImage.setImageBitmap(imageBitmap?.let { ImageDecoder.decodeBitmap(it) })
-        Log.d("TESTCAMERA","들어옴")
-        galleryAddPic()
-    }
-
-    private fun galleryAddPic() {
-        Log.d("test", "currentPhotoPath2 : $currentPhotoPath")
-
-        val file = File(currentPhotoPath)
-        MediaScannerConnection.scanFile(context, arrayOf(file.toString()), null, null)
+        pictureHelper.galleryAddPic()
     }
 
     //절대경로 반환

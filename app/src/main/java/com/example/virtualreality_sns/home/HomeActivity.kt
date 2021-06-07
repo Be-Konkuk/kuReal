@@ -1,19 +1,15 @@
 package com.example.virtualreality_sns.home
 
 import android.os.Bundle
-import androidx.activity.viewModels
 import androidx.appcompat.app.AppCompatActivity
-import androidx.databinding.DataBindingUtil
 import androidx.fragment.app.Fragment
 import androidx.navigation.fragment.NavHostFragment
-import androidx.navigation.ui.setupWithNavController
 import com.example.virtualreality_sns.R
 import com.example.virtualreality_sns.databinding.ActivityHomeBinding
-import com.example.virtualreality_sns.fragment_one
-import com.example.virtualreality_sns.fragment_two
-import android.util.Log
 import android.view.MenuItem
-import com.example.virtualreality_sns.fragment_three
+import com.example.virtualreality_sns.home.fragments.one.OneFragment
+import com.example.virtualreality_sns.home.fragments.three.ThreeFragment
+import com.example.virtualreality_sns.home.fragments.two.TwoFragment
 import com.google.android.material.bottomnavigation.BottomNavigationView
 
 class HomeActivity :AppCompatActivity(),BottomNavigationView.OnNavigationItemSelectedListener{
@@ -21,9 +17,9 @@ class HomeActivity :AppCompatActivity(),BottomNavigationView.OnNavigationItemSel
     private val binding get() = _binding ?: error("View를 참조하기 위해 binding이 초기화되지 않았습니다.")
 //    private val viewModel: HomeViewModel by viewModels() //위임초기화
 
-    private val fragmentOne by lazy { fragment_one() }
-    private val fragmentTwo by lazy { fragment_two() }
-    private val fragmentThree by lazy { fragment_three() }
+    private val fragmentOne by lazy { OneFragment() }
+    private val fragmentTwo by lazy { TwoFragment() }
+    private val fragmentThree by lazy { ThreeFragment() }
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)

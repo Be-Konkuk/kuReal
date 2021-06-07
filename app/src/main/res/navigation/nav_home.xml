@@ -8,7 +8,7 @@
 
     <fragment
         android:id="@+id/fragment_one"
-        android:name="com.example.virtualreality_sns.fragment_one"
+        android:name="com.example.virtualreality_sns.home.fragments.one.OneFragment"
         android:label="fragment_one"
         tools:layout="@layout/fragment_one" >
         <action
@@ -20,12 +20,12 @@
     </fragment>
     <fragment
         android:id="@+id/fragment_two"
-        android:name="com.example.virtualreality_sns.fragment_two"
+        android:name="com.example.virtualreality_sns.home.fragments.two.TwoFragment"
         android:label="fragment_two"
         tools:layout="@layout/fragment_two" />
     <fragment
         android:id="@+id/fragment_three"
-        android:name="com.example.virtualreality_sns.fragment_three"
+        android:name="com.example.virtualreality_sns.home.fragments.three.ThreeFragment"
         android:label="fragment_three"
         tools:layout="@layout/fragment_three" />
 </navigation>

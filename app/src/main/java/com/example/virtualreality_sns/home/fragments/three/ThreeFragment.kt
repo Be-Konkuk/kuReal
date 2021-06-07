@@ -1,4 +1,4 @@
-package com.example.virtualreality_sns
+package com.example.virtualreality_sns.home.fragments.three
 
 
 import android.location.Location
@@ -8,6 +8,7 @@ import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import androidx.fragment.app.Fragment
+import com.example.virtualreality_sns.LocationData
 import com.example.virtualreality_sns.databinding.FragmentThreeBinding
 import com.example.virtualreality_sns.util.LocationHelper
 import com.google.android.gms.maps.CameraUpdateFactory
@@ -17,7 +18,7 @@ import com.google.android.gms.maps.model.LatLng
 import com.google.android.gms.maps.model.MarkerOptions
 
 
-class fragment_three : Fragment() , OnMapReadyCallback{
+class ThreeFragment : Fragment() , OnMapReadyCallback{
     private var _binding: FragmentThreeBinding? = null
     private val binding get() = _binding ?: error("View를 참조하기 위해 binding이 초기화되지 않았습니다.")
     private lateinit var mMap: GoogleMap
@@ -57,7 +58,7 @@ class fragment_three : Fragment() , OnMapReadyCallback{
         markLoc(konkukLoc)
     }
 
-    fun markLoc(loc:LocationData){
+    fun markLoc(loc: LocationData){
         val marker = LatLng(loc.lat, loc.long)
         mMap.addMarker(MarkerOptions().position(marker).title(loc.title))
         mMap.moveCamera(CameraUpdateFactory.newLatLng(marker))

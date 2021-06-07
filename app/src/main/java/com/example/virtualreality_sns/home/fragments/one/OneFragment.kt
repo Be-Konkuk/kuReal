@@ -1,4 +1,4 @@
-package com.example.virtualreality_sns
+package com.example.virtualreality_sns.home.fragments.one
 
 import android.content.res.AssetManager
 import android.graphics.Bitmap
@@ -18,7 +18,7 @@ import java.io.IOException
 import java.io.InputStream
 
 
-class fragment_one : Fragment() {
+class OneFragment : Fragment() {
     private val handler: Handler = Handler(Looper.getMainLooper())
     private var _binding: FragmentOneBinding? = null
     private val binding get() = _binding ?: error("View를 참조하기 위해 binding이 초기화되지 않았습니다.")

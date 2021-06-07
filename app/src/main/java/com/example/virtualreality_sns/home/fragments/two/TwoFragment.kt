@@ -1,4 +1,4 @@
-package com.example.virtualreality_sns
+package com.example.virtualreality_sns.home.fragments.two
 
 import android.Manifest
 import android.app.Activity
@@ -26,7 +26,10 @@ import androidx.core.app.ActivityCompat
 import androidx.core.content.ContextCompat
 import androidx.core.content.FileProvider
 import androidx.fragment.app.Fragment
+import androidx.fragment.app.viewModels
 import com.example.virtualreality_sns.databinding.FragmentTwoBinding
+import com.example.virtualreality_sns.login_signup.login.LoginViewModel
+import com.example.virtualreality_sns.util.PermissionSupport
 import com.google.vr.sdk.widgets.pano.VrPanoramaView
 import java.io.File
 import java.io.IOException
@@ -34,13 +37,17 @@ import java.text.SimpleDateFormat
 import java.util.*
 
 
-class fragment_two : Fragment() {
+class TwoFragment : Fragment() {
     private var _binding: FragmentTwoBinding? = null
     private val binding get() = _binding ?: error("View를 참조하기 위해 binding이 초기화되지 않았습니다.")
+    private val viewModel: TwoViewModel by viewModels() //위임초기화
     // 원본 사진이 저장되는 Uri
     private var photoUri: Uri? = null
     private lateinit var currentPhotoPath: String
     private val handler: Handler = Handler(Looper.getMainLooper()) //tmp
+
+    //권한 요청
+    private lateinit var permissionSupport :PermissionSupport
 
     override fun onCreateView(
         inflater: LayoutInflater,
@@ -49,9 +56,11 @@ class fragment_two : Fragment() {
     ): View? {
         _binding = FragmentTwoBinding.inflate(inflater, container, false)
         binding.lifecycleOwner = viewLifecycleOwner
-        checkPermissions(PERMISSIONS, PERMISSIONS_REQUEST) //권한 요청
+        permissionSupport = PermissionSupport(requireContext()) //권한 요청
+        goCheckPermissions()
         return binding.root
     }
+
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
@@ -250,45 +259,6 @@ class fragment_two : Fragment() {
         MediaScannerConnection.scanFile(context, arrayOf(file.toString()), null, null)
     }
 
-    private fun checkPermissions(permissions: Array<String>, permissionsRequest: Int): Boolean {
-        val permissionList : MutableList<String> = mutableListOf()
-        for(permission in permissions){
-            val result = ContextCompat.checkSelfPermission(requireContext(), permission)
-            if(result != PackageManager.PERMISSION_GRANTED){
-                permissionList.add(permission)
-            }
-        }
-        if(permissionList.isNotEmpty()){
-            ActivityCompat.requestPermissions(requireContext() as Activity, permissionList.toTypedArray(), PERMISSIONS_REQUEST)
-            return false
-        }
-        return true
-    }
-
-    override fun onRequestPermissionsResult(
-        requestCode: Int,
-        permissions: Array<out String>,
-        grantResults: IntArray
-    ) {
-        super.onRequestPermissionsResult(requestCode, permissions, grantResults)
-        for(result in grantResults){
-            if(result != PackageManager.PERMISSION_GRANTED){
-                Toast.makeText(requireContext(), "권한 승인 부탁드립니다.", Toast.LENGTH_SHORT).show()
-                activity?.finish()
-            }
-        }
-    }
-
-    companion object{
-        // Permisisons
-        val PERMISSIONS = arrayOf(
-            Manifest.permission.CAMERA,
-            Manifest.permission.WRITE_EXTERNAL_STORAGE,
-            Manifest.permission.READ_EXTERNAL_STORAGE
-        )
-        val PERMISSIONS_REQUEST = 100
-    }
-
     //절대경로 반환
     fun getFullPathFromUri(ctx: Context, fileUri: Uri?): String? {
         var fullPath: String? = null
@@ -328,6 +298,23 @@ class fragment_two : Fragment() {
             }
         }
         return fullPath
+    }
+
+    fun goCheckPermissions(){
+        if(!permissionSupport.checkPermissions()){ //권한 요청 거부
+            permissionSupport.requestPermission()
+        }
+    }
+
+    override fun onRequestPermissionsResult(
+        requestCode: Int,
+        permissions: Array<out String>,
+        grantResults: IntArray
+    ) {
+        super.onRequestPermissionsResult(requestCode, permissions, grantResults)
+        if(!permissionSupport.permissionResult(requestCode,permissions ,grantResults)){
+            permissionSupport.requestPermission()
+        }
     }
 
 }
